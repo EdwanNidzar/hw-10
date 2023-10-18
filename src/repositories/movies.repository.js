@@ -54,4 +54,39 @@ const editMovie = async (movieId, movieData) => {
   }
 };
 
-module.exports = { findAllMovies, insertMovie, findMovieById, editMovie };
+const deleteMovie = async (movieId) => {
+  try {
+    const movie = await findMovieById(movieId);
+
+    if (!movie) {
+      throw new Error(`Movie with ID ${movieId} not found`);
+    }
+
+    const deleteMovie = await movie.destroy();
+    return deleteMovie;
+  } catch (error) {
+    throw new Error("Error deleting movie in the database");
+  }
+};
+
+const findPaginatedMovies = async (page, pageSize) => {
+  try {
+    const offset = (page - 1) * pageSize;
+    const movies = await Movie.findAndCountAll({
+      offset,
+      limit: pageSize,
+    });
+    return movies;
+  } catch (error) {
+    throw new Error("Error fetching paginated films from database");
+  }
+};
+
+module.exports = {
+  findAllMovies,
+  insertMovie,
+  findMovieById,
+  editMovie,
+  deleteMovie,
+  findPaginatedMovies,
+};

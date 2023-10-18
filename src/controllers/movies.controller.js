@@ -2,7 +2,10 @@ const movieService = require("../services/movies.service");
 
 const getAllMovies = async (req, res) => {
   try {
-    const movies = await movieService.getAllMovies();
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 10;
+
+    const movies = await movieService.getPaginatedMovies(page, pageSize);
     res.json({ data: movies });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -46,4 +49,21 @@ const editMovie = async (req, res) => {
   }
 };
 
-module.exports = { getAllMovies, createMovie, getMovieById, editMovie };
+const deleteMovie = async (req, res) => {
+  try {
+    const movieId = parseInt(req.params.id);
+    await movieService.deleteMovie(movieId);
+
+    res.json({ message: "delete movie success" });
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+module.exports = {
+  getAllMovies,
+  createMovie,
+  getMovieById,
+  editMovie,
+  deleteMovie,
+};

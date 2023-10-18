@@ -1,5 +1,18 @@
 const movieRepository = require("../repositories/movies.repository");
 
+const getPaginatedMovies = async (page, pageSize) => {
+  try {
+    const movies = await movieRepository.findPaginatedMovies(page, pageSize);
+    if (!movies || movies.rows.length === 0) {
+      throw new Error("No movies available");
+    } else {
+      return movies;
+    }
+  } catch (error) {
+    throw new Error("Error fetching paginated films");
+  }
+};
+
 const getAllMovies = async () => {
   try {
     const movies = await movieRepository.findAllMovies();
@@ -67,4 +80,26 @@ const editMovie = async (movieId, movieData) => {
   }
 };
 
-module.exports = { getAllMovies, createMovie, getMoviebyId, editMovie };
+const deleteMovie = async (movieId) => {
+  try {
+    const existingMovie = await getMoviebyId(movieId);
+
+    if (!existingMovie) {
+      throw new Error(`Movie with ID ${movieId} not found`);
+    }
+
+    const deleteMovie = await movieRepository.deleteMovie(movieId);
+    return deleteMovie;
+  } catch (error) {
+    throw new Error(`Error deleting movie: ${error.message}`);
+  }
+};
+
+module.exports = {
+  getAllMovies,
+  createMovie,
+  getMoviebyId,
+  editMovie,
+  deleteMovie,
+  getPaginatedMovies,
+};
