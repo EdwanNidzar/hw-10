@@ -24,4 +24,18 @@ const insertMovie = async (movieData) => {
   }
 };
 
-module.exports = { findAllMovies, insertMovie };
+const findMovieById = async (movieId) => {
+  try {
+    const movie = await Movie.findByPk(movieId);
+
+    if (!movie) {
+      throw new Error(`Movie with ID ${movieId} not found`);
+    }
+
+    return movie;
+  } catch (error) {
+    throw new Error("Error fetching movie by ID from database");
+  }
+};
+
+module.exports = { findAllMovies, insertMovie, findMovieById };

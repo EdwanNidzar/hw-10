@@ -23,4 +23,14 @@ const createMovie = async (req, res) => {
   }
 };
 
-module.exports = { getAllMovies, createMovie };
+const getAllMovieById = async (req, res) => {
+  try {
+    const movieId = parseInt(req.params.id);
+    const movie = await movieService.getAllMoviebyId(movieId);
+    res.json({ data: movie });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { getAllMovies, createMovie, getAllMovieById };

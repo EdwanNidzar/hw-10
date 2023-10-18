@@ -26,4 +26,17 @@ const createMovie = async (movieData) => {
   return movie;
 };
 
-module.exports = { getAllMovies, createMovie };
+const getAllMoviebyId = async (movieId) => {
+  try {
+    const movie = await movieRepository.findMovieById(movieId);
+    if (!movie) {
+      throw new Error(`Movie ${movie} not found`);
+    } else {
+      return movie;
+    }
+  } catch (error) {
+    throw new Error("Error fetching films");
+  }
+};
+
+module.exports = { getAllMovies, createMovie, getAllMoviebyId };
