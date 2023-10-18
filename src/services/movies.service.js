@@ -14,19 +14,23 @@ const getAllMovies = async () => {
 };
 
 const createMovie = async (movieData) => {
-  const requiredFields = ["title", "genres", "year", "photo"];
+  try {
+    const requiredFields = ["title", "genres", "year", "photo"];
 
-  for (const field of requiredFields) {
-    if (!movieData[field]) {
-      throw new Error(`Field '${field}' is required`);
+    for (const field of requiredFields) {
+      if (!movieData[field]) {
+        throw new Error(`Field ${field} is required`);
+      }
     }
-  }
 
-  const movie = await movieRepository.insertMovie(movieData);
-  return movie;
+    const movie = await movieRepository.insertMovie(movieData);
+    return movie;
+  } catch (error) {
+    throw new Error(`Error creating movie: ${error.message}`);
+  }
 };
 
-const getAllMoviebyId = async (movieId) => {
+const getMoviebyId = async (movieId) => {
   try {
     const movie = await movieRepository.findMovieById(movieId);
     if (!movie) {
@@ -39,4 +43,28 @@ const getAllMoviebyId = async (movieId) => {
   }
 };
 
-module.exports = { getAllMovies, createMovie, getAllMoviebyId };
+const editMovie = async (movieId, movieData) => {
+  try {
+    const existingMovie = await getMoviebyId(movieId);
+
+    if (!existingMovie) {
+      throw new Error(`Movie with ID ${movieId} not found`);
+    }
+
+    const requiredFields = ["title", "genres", "year", "photo"];
+
+    for (const field of requiredFields) {
+      if (!movieData[field]) {
+        throw new Error(`Field '${field}' is required`);
+      }
+    }
+
+    const editedMovie = await movieRepository.editMovie(movieId, movieData);
+
+    return editedMovie;
+  } catch (error) {
+    throw new Error(`Error editing movie: ${error.message}`);
+  }
+};
+
+module.exports = { getAllMovies, createMovie, getMoviebyId, editMovie };
