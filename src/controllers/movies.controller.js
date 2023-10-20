@@ -19,11 +19,8 @@ const upload = multer({ storage: diskStorage });
 
 const getAllMovies = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const pageSize = parseInt(req.query.pageSize) || 10;
-
-    const movies = await movieService.getPaginatedMovies(page, pageSize);
-    res.json({ data: movies });
+    const movies = await movieService.getAllMovies();
+    res.render("movies-view", { data: movies });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -69,6 +66,7 @@ const getMovieById = async (req, res) => {
     const movieId = parseInt(req.params.id);
     const movie = await movieService.getMoviebyId(movieId);
     res.json({ data: movie });
+    // res.render("movies-view", { data: movie });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

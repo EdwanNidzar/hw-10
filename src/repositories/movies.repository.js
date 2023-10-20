@@ -69,24 +69,10 @@ const deleteMovie = async (movieId) => {
   }
 };
 
-const findPaginatedMovies = async (page, pageSize) => {
-  try {
-    const offset = (page - 1) * pageSize;
-    const movies = await Movie.findAndCountAll({
-      offset,
-      limit: pageSize,
-    });
-    return movies;
-  } catch (error) {
-    throw new Error("Error fetching paginated films from database");
-  }
-};
-
 module.exports = {
   findAllMovies,
   insertMovie,
   findMovieById,
   editMovie,
   deleteMovie,
-  findPaginatedMovies,
 };
